@@ -1,0 +1,8 @@
+{
+  "id": "valentines",
+  "name": "Valentine's Day",
+  "month": 2,
+  "day": 14,
+  "tintColorHex": "#FF5A82",
+  "particleColorHex": "#FF5C82"
+}

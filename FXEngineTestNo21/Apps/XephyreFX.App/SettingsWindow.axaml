@@ -1,0 +1,250 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="XephyreFX.App.SettingsWindow"
+        Title="XephyreFX Settings" Width="380" Height="860"
+        Background="#101119">
+    <Window.Styles>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="#1B1C28" />
+            <Setter Property="BorderBrush" Value="#2A2C3C" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,14" />
+        </Style>
+        <Style Selector="TextBlock.sectionTitle">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style Selector="TextBlock.hint">
+            <Setter Property="Foreground" Value="#9098AC" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+        <Style Selector="TextBlock.fieldLabel">
+            <Setter Property="Foreground" Value="#C6CBDA" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="#33354A" />
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="16">
+                <TextBlock Text="XephyreFX" Foreground="White" FontSize="22" FontWeight="Bold" Margin="0,0,0,2" />
+                <TextBlock Text="Settings live here; the scene window just shows the blob." Classes="hint" Margin="0,0,0,18" />
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Desktop mode" Classes="sectionTitle" />
+                        <TextBlock Name="DesktopModeStatusText" Classes="fieldLabel" Margin="0,0,0,4" />
+                        <TextBlock Text="Windows only, experimental. Pins the scene behind your desktop icons, Rainmeter/Lively-style. This settings window always stays a normal window either way." Classes="hint" FontSize="10" Foreground="#7A8199" />
+                        <Grid ColumnDefinitions="*,*" Margin="0,0,0,8">
+                            <Button Name="EnableDesktopModeButton" Content="Enable" Click="OnEnableDesktopModeClick"
+                                    Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,4,0" />
+                            <Button Name="DisableDesktopModeButton" Content="Disable" Click="OnDisableDesktopModeClick"
+                                    Grid.Column="1" HorizontalAlignment="Stretch" Margin="4,0,0,0" />
+                        </Grid>
+                        <TextBlock Name="StartEmbeddedStatusText" Classes="fieldLabel" Margin="0,0,0,4" />
+                        <Grid ColumnDefinitions="*,*">
+                            <Button Name="RememberStartEmbeddedButton" Content="Always start this way" Click="OnRememberStartEmbeddedClick"
+                                    Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,4,0" />
+                            <Button Name="ForgetStartEmbeddedButton" Content="Always start normal" Click="OnForgetStartEmbeddedClick"
+                                    Grid.Column="1" HorizontalAlignment="Stretch" Margin="4,0,0,0" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Weather Trickster" Classes="sectionTitle" FontSize="16" />
+                        <TextBlock Text="Force any scene combo to test." Classes="hint" Margin="0,0,0,12" />
+
+                        <CheckBox Name="OverrideEnabledCheck" Content="Enable override" Foreground="White" Margin="0,0,0,12" />
+
+                        <TextBlock Text="Condition" Classes="fieldLabel" />
+                        <ComboBox Name="ConditionCombo" HorizontalAlignment="Stretch" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Time of day" Classes="fieldLabel" />
+                        <ComboBox Name="PeriodCombo" HorizontalAlignment="Stretch" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Intensity" Classes="fieldLabel" />
+                        <Slider Name="IntensitySlider" Minimum="0" Maximum="1" Value="0.4" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Temperature (°C)" Classes="fieldLabel" />
+                        <Slider Name="TempSlider" Minimum="-15" Maximum="42" Value="21" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Blob morph speed" Classes="fieldLabel" />
+                        <Slider Name="MorphSpeedSlider" Minimum="0.1" Maximum="3" Value="1" Margin="0,0,0,10" />
+
+                        <CheckBox Name="ValentinesCheck" Content="Force Valentine's Day" Foreground="White" Margin="0,0,0,14" />
+
+                        <Button Name="RerollButton" Content="Reroll blob / random gen" Click="OnRerollClick"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+                        <Button Name="ResetTricksterButton" Content="Reset to real clock" Click="OnResetTricksterClick"
+                                HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Appearance" Classes="sectionTitle" FontSize="16" />
+                        <TextBlock Text="Hand-edit config.json anytime, or use these." Classes="hint" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Blob color (hex)" Classes="fieldLabel" />
+                        <TextBox Name="BlobBaseColorBox" Margin="0,0,0,8" />
+
+                        <TextBlock Text="Blob highlight (hex)" Classes="fieldLabel" />
+                        <TextBox Name="BlobHighlightColorBox" Margin="0,0,0,8" />
+
+                        <TextBlock Text="Font family" Classes="fieldLabel" />
+                        <ComboBox Name="TextFontCombo" HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Selected element" Classes="sectionTitle" FontSize="13" />
+                        <TextBlock Text="Click Time, Date, Temperature, Condition, Forecast, the sun/moon, the cloud spawn point, or any line/image in the scene window to select it. Drag to move it." Classes="hint" />
+                        <TextBlock Name="SelectedElementLabel" Text="Selected: none" Classes="fieldLabel" Margin="0,0,0,8" />
+
+                        <TextBlock Text="Color (hex)" Classes="fieldLabel" />
+                        <TextBox Name="SelectedColorBox" Margin="0,0,0,8" />
+
+                        <TextBlock Text="Size" Classes="fieldLabel" />
+                        <TextBox Name="SelectedScaleBox" Margin="0,0,0,8" />
+
+                        <TextBlock Text="Font (text elements only, blank = use shared font above)" Classes="fieldLabel" />
+                        <ComboBox Name="SelectedFontCombo" HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+
+                        <TextBlock Text="Line length / thickness (lines only)" Classes="fieldLabel" />
+                        <Grid ColumnDefinitions="*,*" Margin="0,0,0,10">
+                            <TextBox Name="SelectedLineLengthBox" Grid.Column="0" Margin="0,0,4,0" />
+                            <TextBox Name="SelectedLineThicknessBox" Grid.Column="1" Margin="4,0,0,0" />
+                        </Grid>
+
+                        <Button Name="ApplySelectedButton" Content="Apply to selected" Click="OnApplySelectedClick"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+                        <Button Name="DeleteSelectedButton" Content="Delete selected (lines/images only)" Click="OnDeleteSelectedClick"
+                                HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Add divider line or image" Classes="sectionTitle" FontSize="13" />
+                        <TextBlock Text="A new one appears at the blob's center -- drag it into place, then select it above." Classes="hint" />
+
+                        <TextBlock Text="Image path (for 'Add image')" Classes="fieldLabel" />
+                        <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                            <TextBox Name="NewImagePathBox" Grid.Column="0" Margin="0,0,6,0" />
+                            <Button Name="BrowseNewImageButton" Content="Browse..." Click="OnBrowseNewImageClick" Grid.Column="1" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*">
+                            <Button Name="AddLineButton" Content="Add line" Click="OnAddLineClick"
+                                    Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,4,0" />
+                            <Button Name="AddImageButton" Content="Add image" Click="OnAddImageClick"
+                                    Grid.Column="1" HorizontalAlignment="Stretch" Margin="4,0,0,0" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Sun/moon images" Classes="sectionTitle" FontSize="13" />
+                        <TextBlock Text="Each time-of-day period can have its own image (e.g. a different picture for the moon than for the noon sun). Blank = default." Classes="hint" />
+
+                        <TextBlock Text="Period" Classes="fieldLabel" />
+                        <ComboBox Name="CelestialPeriodCombo" HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+
+                        <TextBlock Name="CelestialImageStatusText" Classes="hint" />
+
+                        <Grid ColumnDefinitions="*,*" Margin="0,0,0,10">
+                            <Button Name="BrowseCelestialImageButton" Content="Browse..." Click="OnBrowseCelestialImageClick"
+                                    Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,4,0" />
+                            <Button Name="ClearCelestialImageButton" Content="Clear" Click="OnClearCelestialImageClick"
+                                    Grid.Column="1" HorizontalAlignment="Stretch" Margin="4,0,0,0" />
+                        </Grid>
+
+                        <TextBlock Text="Sun/moon offset X / Y (px) -- or drag it in the scene" Classes="fieldLabel" />
+                        <Grid ColumnDefinitions="*,*" Margin="0,0,0,8">
+                            <TextBox Name="CelestialOffsetXBox" Grid.Column="0" Margin="0,0,4,0" />
+                            <TextBox Name="CelestialOffsetYBox" Grid.Column="1" Margin="4,0,0,0" />
+                        </Grid>
+
+                        <TextBlock Text="Sun/moon scale" Classes="fieldLabel" />
+                        <TextBox Name="CelestialScaleBox" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <Button Name="SaveSettingsButton" Content="Save appearance" Click="OnSaveSettingsClick"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+                        <Button Name="ResetAppearanceButton" Content="Reset appearance to defaults" Click="OnResetAppearanceClick"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+                        <Button Name="ReloadSettingsButton" Content="Reload from disk" Click="OnReloadSettingsClick"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+                        <Button Name="OpenFolderButton" Content="Open app folder" Click="OnOpenFolderClick"
+                                HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Startup" Classes="sectionTitle" />
+                        <TextBlock Name="StartupStatusText" Classes="hint" />
+                        <Grid ColumnDefinitions="*,*">
+                            <Button Name="EnableStartupButton" Content="Enable" Click="OnEnableStartupClick"
+                                    Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,4,0" />
+                            <Button Name="DisableStartupButton" Content="Disable" Click="OnDisableStartupClick"
+                                    Grid.Column="1" HorizontalAlignment="Stretch" Margin="4,0,0,0" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Custom events" Classes="sectionTitle" />
+                        <TextBlock Classes="hint" Margin="0"
+                                   Text="Drop a .json file in the Events folder (see valentines.json for the format) to add your own date-triggered overlay -- no coding or recompiling needed." />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Text="Credits" Classes="sectionTitle" />
+                        <TextBlock Name="CreditsText" Foreground="#C6CBDA" FontSize="11" Margin="0,0,0,6" TextWrapping="Wrap" />
+                        <TextBlock Foreground="#7A8199" FontSize="10" TextWrapping="Wrap"
+                                   Text="YouTube link is a placeholder until you have the real one -- edit credits.youTube in config.json, or YOUTUBE_LINK.txt in the app folder, whichever's easier." />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Foreground="#5C6178" FontSize="10" TextWrapping="Wrap" Margin="4,4,4,4"
+                           Text="XephyreFX -- runs as native windows on Windows and Linux from the same code. Desktop mode above is Windows-only." />
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Name="ConfirmOverlay" IsVisible="False" Background="#DD0A0B12">
+            <Border Background="#1C1E2A" BorderBrush="#3A3D52" BorderThickness="1" CornerRadius="8"
+                    Width="280" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="18">
+                <StackPanel>
+                    <TextBlock Name="ConfirmMessageText" Foreground="White" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,16" />
+                    <Grid ColumnDefinitions="*,*">
+                        <Button Name="ConfirmNoButton" Content="Cancel" Click="OnConfirmNoClick"
+                                Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,4,0" />
+                        <Button Name="ConfirmYesButton" Content="Yes" Click="OnConfirmYesClick"
+                                Grid.Column="1" HorizontalAlignment="Stretch" Margin="4,0,0,0" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>
