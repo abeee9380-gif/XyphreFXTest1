@@ -1,36 +1,98 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ main ]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  build-core:
+    name: Build engine + tests (Linux)
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Restore
+        run: dotnet restore FXEngineTestNo21/FXEngine.sln
+
+      - name: Build
+        run: dotnet build FXEngineTestNo21/FXEngine.sln --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test FXEngineTestNo21/Tests/FXEngine.Tests.csproj --no-restore --configuration Release --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: FXEngineTestNo21/Tests/TestResults/test-results.trx
+
+  publish-xephyrefx-app:
+    name: Publish XephyreFX.App (${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish self-contained ${{ matrix.rid }} build
+        run: >
+          dotnet publish FXEngineTestNo21/Apps/XephyreFX.App/XephyreFX.App.csproj
+          -c Release -r ${{ matrix.rid }} --self-contained true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish/${{ matrix.rid }}
+
+      - name: Upload raw build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: XephyreFX-${{ matrix.rid }}-raw
+          path: publish/${{ matrix.rid }}
+
+      - name: Build Windows installer
+        if: matrix.rid == 'win-x64'
+        continue-on-error: true
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" FXEngineTestNo21\packaging\windows\xephyrefx.iss'
+
+      - name: Upload Windows installer
+        if: matrix.rid == 'win-x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: XephyreFX-Setup-win-x64
+          path: dist/XephyreFX-Setup.exe
+          if-no-files-found: ignore
+
+      - name: Build Linux install bundle
+        if: matrix.rid == 'linux-x64'
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          mkdir -p dist/xephyrefx-linux-x64/app
+          cp -r publish/linux-x64/* dist/xephyrefx-linux-x64/app/
+          cp FXEngineTestNo21/packaging/linux/xephyrefx.desktop dist/xephyrefx-linux-x64/
+          cp FXEngineTestNo21/packaging/linux/install.sh dist/xephyrefx-linux-x64/
+          chmod +x dist/xephyrefx-linux-x64/install.sh dist/xephyrefx-linux-x64/app/XephyreFX
+          tar -czf dist/XephyreFX-linux-x64.tar.gz -C dist xephyrefx-linux-x64
+
+      - name: Upload Linux install bundle
+        if: matrix.rid == 'linux-x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: XephyreFX-linux-x64
+          path: dist/XephyreFX-linux-x64.tar.gz
