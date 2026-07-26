@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=XephyreFX
+Comment=Animated weather effects blob
+Exec=XephyreFX
+Terminal=false
+Categories=Utility;

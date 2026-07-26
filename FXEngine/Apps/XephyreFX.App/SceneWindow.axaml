@@ -1,0 +1,10 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="XephyreFX.App.SceneWindow"
+        Title="XephyreFX" Width="1040" Height="760"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        SystemDecorations="None"
+        ShowInTaskbar="False">
+    <Canvas Name="SceneCanvas" ClipToBounds="True" />
+</Window>

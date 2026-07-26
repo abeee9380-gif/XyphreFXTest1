@@ -1,0 +1,10 @@
+This file exists purely so the YouTube channel link is easy to find and drop in later.
+
+Channel link: (not set yet -- paste it on the line above, or edit "youTube" under "credits" in config.json, whichever's easier)
+
+Once you have a real link, you can put it in either place:
+- Here, in this file (just for your own reference)
+- config.json -> credits -> youTube (this is the one that actually shows up in the app's
+  Settings window, under "Credits")
+
+The app itself always reads from config.json, not this file.
